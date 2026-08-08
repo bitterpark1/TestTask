@@ -737,7 +737,7 @@ Rigidbody:
   m_GameObject: {fileID: 1501513304483984424}
   serializedVersion: 5
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 100
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -789,7 +789,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c9ee05cd4c1d424e8c1d9d06c51508a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBehaviour
-  takingDamage: 0
   animator: {fileID: 4537866064772458559}
   myBody: {fileID: 7110332616608722246}
   playerPos: {fileID: 0}

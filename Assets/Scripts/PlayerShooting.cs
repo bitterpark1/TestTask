@@ -27,7 +27,7 @@ public class PlayerShooting : MonoBehaviour
 
 	private void Awake()
 	{
-		enemies = Resources.FindObjectsOfTypeAll<EnemyBehaviour>();
+		enemies = FindObjectsByType<EnemyBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 		//set shoot animation speed factor
 	}
 
@@ -35,7 +35,6 @@ public class PlayerShooting : MonoBehaviour
 	{
 		if (currentTarget == null)
 		{
-			//Go through enemies and find nearest
 			for (int i=0; i< enemies.Length; i++)
 			{
 				var enemy = enemies[i];
@@ -60,7 +59,7 @@ public class PlayerShooting : MonoBehaviour
 		} else
 		{
 			var direction = currentTarget.position - transform.position;
-			myBody.MoveRotation(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 5f * Time.fixedDeltaTime));
+			myBody.MoveRotation(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 10f * Time.fixedDeltaTime));
 		}
 		animator.SetBool(shootParam, shooting);
 	}
@@ -69,7 +68,7 @@ public class PlayerShooting : MonoBehaviour
 	{
 		shooting = false;
 		muzzleFlash.Play();
-		//Invoke event to damage enemy
+
 		EPlayerFired?.Invoke(currentTarget, damage);
 		currentTarget = null;
 	}

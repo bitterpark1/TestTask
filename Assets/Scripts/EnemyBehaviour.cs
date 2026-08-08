@@ -44,6 +44,11 @@ public class EnemyBehaviour : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+        if (takingDamage)
+		{
+            return;
+		}
+        
         //Find direction to player
         var directionToPlayer = playerPos.position - transform.position;
         var distanceToPlayer = directionToPlayer.magnitude;
