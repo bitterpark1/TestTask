@@ -6,13 +6,22 @@ namespace Assets.Scripts
 {
 	public class EnemyHealth : MonoBehaviour
 	{
+		public static event System.Action<EnemyHealth> EEnemyDead;
+
 		[SerializeField]
 		Animator animator;
 
 		[SerializeField]
 		EnemyBehaviour behaviour;
 
+		[SerializeField]
+		UIBar hpBar;
+
+		[SerializeField]
+		Collider myCollider;
+
 		readonly int HurtAnimationParam = Animator.StringToHash("Hurt");
+		readonly int DeathAnimationParam = Animator.StringToHash("Die");
 
 		int startingHp = 10;
 
@@ -21,6 +30,8 @@ namespace Assets.Scripts
 		private void OnEnable()
 		{
 			hp = startingHp;
+			hpBar.SetMaxValue(hp);
+			hpBar.SetCurrentValue(hp);
 			//Subscribe to player shoot event
 			PlayerShooting.EPlayerFired += OnPlayerFired;
 		}
@@ -41,19 +52,30 @@ namespace Assets.Scripts
 		void OnShot(int damageTaken)
 		{
 			hp -= damageTaken;
+			hpBar.SetCurrentValue(hp);
 			if (hp > 0)
 			{
 				animator.SetTrigger(HurtAnimationParam);
 				behaviour.takingDamage = true;
-			} else
+			}
+			else
 			{
-				gameObject.SetActive(false);
+				animator.SetTrigger(DeathAnimationParam);
+				myCollider.enabled = false;
+				EEnemyDead?.Invoke(this);
+				behaviour.enabled = false;
+				hpBar.gameObject.SetActive(false);
 			}
 		}
 
 		void OnHurtAnimEnded()
 		{
 			behaviour.takingDamage = false;
+		}
+
+		void OnDeathAnimEnded()
+		{
+			Destroy(gameObject);
 		}
 	}
 }

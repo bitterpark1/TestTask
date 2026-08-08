@@ -1,3 +1,6 @@
+using Assets.Scripts;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -15,7 +18,7 @@ public class PlayerShooting : MonoBehaviour
 	[SerializeField]
 	Rigidbody myBody;
 
-	EnemyBehaviour[] enemies;
+	List<EnemyHealth> enemies;
 
 	Transform currentTarget;
 
@@ -27,36 +30,45 @@ public class PlayerShooting : MonoBehaviour
 
 	private void Awake()
 	{
-		enemies = FindObjectsByType<EnemyBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+		enemies = new List<EnemyHealth>(FindObjectsByType<EnemyHealth>(FindObjectsInactive.Exclude, FindObjectsSortMode.None));
+		EnemyHealth.EEnemyDead += OnEnemyDied;
 		//set shoot animation speed factor
+	}
+
+	private void OnEnemyDied(EnemyHealth obj)
+	{
+		enemies.Remove(obj);
+	}
+
+	private void OnDestroy()
+	{
+		EnemyHealth.EEnemyDead -= OnEnemyDied;
 	}
 
 	private void FixedUpdate()
 	{
-		if (currentTarget == null)
-		{
-			for (int i=0; i< enemies.Length; i++)
-			{
-				var enemy = enemies[i];
-				if (!enemy.gameObject.activeInHierarchy)
-				{
-					continue;
-				}
 
-				if (currentTarget == null)
-				{
-					currentTarget = enemy.transform;
-					shooting = true;
-				}
-				else if((transform.position - enemy.transform.position).sqrMagnitude < (transform.position - currentTarget.position).sqrMagnitude)
-				{
-					currentTarget = enemy.transform;
-					shooting = true;
-				}
+		for (int i=0; i< enemies.Count; i++)
+		{
+			var enemy = enemies[i];
+			if (!enemy.gameObject.activeInHierarchy)
+			{
+				continue;
 			}
 
-			
-		} else
+			if (currentTarget == null)
+			{
+				currentTarget = enemy.transform;
+				shooting = true;
+			}
+			else if((transform.position - enemy.transform.position).sqrMagnitude < (transform.position - currentTarget.position).sqrMagnitude)
+			{
+				currentTarget = enemy.transform;
+				shooting = true;
+			}
+		}
+
+		if (currentTarget != null)
 		{
 			var direction = currentTarget.position - transform.position;
 			myBody.MoveRotation(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 10f * Time.fixedDeltaTime));

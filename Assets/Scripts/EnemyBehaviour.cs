@@ -4,6 +4,8 @@ using UnityEngine.AI;
 public class EnemyBehaviour : MonoBehaviour
 {
 
+    public static event System.Action<int> EEnemyHitPlayer;
+
     [System.NonSerialized]
     public bool takingDamage;
 
@@ -26,6 +28,8 @@ public class EnemyBehaviour : MonoBehaviour
     readonly int AttackAnimParam = Animator.StringToHash("Attacking");
 
     bool attacking = false;
+
+    int attackDamage = 10;
 
     Vector3[] currentPath = new Vector3[32];
     RaycastHit[] raycastHits = new RaycastHit[1];
@@ -109,5 +113,10 @@ public class EnemyBehaviour : MonoBehaviour
         animator.SetBool(AttackAnimParam, attacking);
 
 	}
+
+    void OnAttackAnimationFinished()
+	{
+        EEnemyHitPlayer?.Invoke(attackDamage);
+    }
 
 }
