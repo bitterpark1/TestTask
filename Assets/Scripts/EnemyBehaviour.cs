@@ -4,6 +4,9 @@ using UnityEngine.AI;
 public class EnemyBehaviour : MonoBehaviour
 {
 
+    [System.NonSerialized]
+    public bool takingDamage;
+
     [SerializeField]
     Animator animator;
     [SerializeField]
@@ -20,11 +23,7 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField]
     float moveSpeed;
 
-    [SerializeField]
-    Transform showPoint;
-
     readonly int AttackAnimParam = Animator.StringToHash("Attacking");
-    readonly int HurtAnimParam = Animator.StringToHash("Hurt");
 
     bool attacking = false;
 
@@ -35,7 +34,15 @@ public class EnemyBehaviour : MonoBehaviour
 
     int pathNextWaypointIndex;
 
-    private void FixedUpdate()
+	private void OnDisable()
+	{
+        takingDamage = false;
+        attacking = false;
+        pathNextWaypointIndex = 0;
+        repathTimerCurrent = 0;
+	}
+
+	private void FixedUpdate()
 	{
         //Find direction to player
         var directionToPlayer = playerPos.position - transform.position;
@@ -74,7 +81,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         //Find direction to player
         var directionToCurrentGoal = targetPos - transform.position;
-        //Lerp rotate towards player
+        //Lerp rotate towards goal
         myBody.MoveRotation(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToCurrentGoal), 5f * Time.fixedDeltaTime));
 
 
