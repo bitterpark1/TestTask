@@ -9,7 +9,7 @@ public class EnemyBehaviour : MonoBehaviour
     [System.NonSerialized]
     public bool takingDamage;
 
-    [SerializeField]
+    //[SerializeField]
     Animator animator;
     [SerializeField]
     Rigidbody myBody;
@@ -23,9 +23,10 @@ public class EnemyBehaviour : MonoBehaviour
     float minAttackDistance = .75f;
 
     [SerializeField]
-    float moveSpeed;
+    float baseSpeed = 3;
 
     readonly int AttackAnimParam = Animator.StringToHash("Attacking");
+    readonly int MoveSpeedAnimParam = Animator.StringToHash("Speed");
 
     bool attacking = false;
 
@@ -34,9 +35,21 @@ public class EnemyBehaviour : MonoBehaviour
     Vector3[] currentPath = new Vector3[32];
     RaycastHit[] raycastHits = new RaycastHit[1];
     float repathTimerCurrent;
-    float repathTime = .5f;
+    float repathTime = 1f;
 
     int pathNextWaypointIndex;
+
+
+    public void Initialize(int damage, float speed, Animator animator, Transform playerTransform)
+    {
+        attackDamage = damage;
+        baseSpeed = baseSpeed * speed;
+        
+        this.animator = animator;
+        animator.SetFloat(MoveSpeedAnimParam, speed);
+        playerPos = playerTransform;
+    }
+
 
 	private void OnDisable()
 	{
@@ -47,24 +60,21 @@ public class EnemyBehaviour : MonoBehaviour
 	}
 
 	private void FixedUpdate()
-	{
+	{   
         if (takingDamage)
 		{
             return;
 		}
         
-        //Find direction to player
         var directionToPlayer = playerPos.position - transform.position;
         var distanceToPlayer = directionToPlayer.magnitude;
 
-        //Raycast to see if player is obstructed
         Vector3 targetPos = playerPos.position;
         bool playerBehindObstacles = Physics.RaycastNonAlloc(new Ray(transform.position + new Vector3(0, 0.3f), directionToPlayer), raycastHits, distanceToPlayer, LayerMask.GetMask("Walls")) > 0;
 
         if (playerBehindObstacles)
 		{
-            //if no path exists or timer has elapsed - get navmesh path
-            if (currentPath == null || currentPath.Length == 0 || repathTimerCurrent < 0)
+            if (repathTimerCurrent < 0)
 			{
                 NavMeshPath newPath = new NavMeshPath();
                 if (NavMesh.CalculatePath(transform.position, playerPos.position, NavMesh.AllAreas, newPath))
@@ -78,7 +88,7 @@ public class EnemyBehaviour : MonoBehaviour
                 repathTimerCurrent -= Time.fixedDeltaTime;
 			}
 
-            if (currentPath != null && currentPath.Length > pathNextWaypointIndex)
+            if (currentPath.Length > pathNextWaypointIndex)
 			{
                 targetPos = currentPath[pathNextWaypointIndex];
                 if ((targetPos - transform.position).sqrMagnitude < 0.05f)
@@ -88,9 +98,7 @@ public class EnemyBehaviour : MonoBehaviour
             }
 		}    
 
-        //Find direction to player
         var directionToCurrentGoal = targetPos - transform.position;
-        //Lerp rotate towards goal
         myBody.MoveRotation(Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionToCurrentGoal), 5f * Time.fixedDeltaTime));
 
 
@@ -103,7 +111,7 @@ public class EnemyBehaviour : MonoBehaviour
 		{
             if (distanceToPlayer > minAttackDistance)
 			{
-                myBody.MovePosition(transform.position + directionToCurrentGoal.normalized * moveSpeed * Time.fixedDeltaTime);
+                myBody.MovePosition(transform.position + directionToCurrentGoal.normalized * baseSpeed * Time.fixedDeltaTime);
             } else
 			{
                 attacking = true;
@@ -114,9 +122,8 @@ public class EnemyBehaviour : MonoBehaviour
 
 	}
 
-    void OnAttackAnimationFinished()
+    void OnAttackAnimationHitPlayer()
 	{
         EEnemyHitPlayer?.Invoke(attackDamage);
     }
-
 }

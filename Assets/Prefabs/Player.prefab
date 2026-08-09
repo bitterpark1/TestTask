@@ -464,8 +464,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   input: {fileID: 188233915234583460}
   playerBody: {fileID: 2704945000258534817}
-  playerSpeed: 6
+  playerSpeedBase: 6
   animator: {fileID: -6308181809253349509}
+  config: {fileID: 11400000, guid: 341951dffadc1e047bc38f64fbe627ed, type: 2}
 --- !u!114 &7664200647450091590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,6 +482,7 @@ MonoBehaviour:
   animator: {fileID: -6308181809253349509}
   muzzleFlash: {fileID: 6801703728291192540}
   myBody: {fileID: 2704945000258534817}
+  config: {fileID: 11400000, guid: 341951dffadc1e047bc38f64fbe627ed, type: 2}
 --- !u!114 &4539394459849659644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,3 +496,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Assets.Scripts.PlayerHealth
   hpBar: {fileID: 0}
+  config: {fileID: 11400000, guid: 341951dffadc1e047bc38f64fbe627ed, type: 2}

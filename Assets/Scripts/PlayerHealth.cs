@@ -7,14 +7,22 @@ namespace Assets.Scripts
 	{
 		[SerializeField]
 		UIBar hpBar;
-		
+
+		[SerializeField]
+		PlayerConfig config;
+
 		int hp = 100;
 
 		private void Awake()
 		{
 			EnemyBehaviour.EEnemyHitPlayer += OnHit;
+			hp = config.health;
 			hpBar.SetMaxValue(hp);
 			hpBar.SetCurrentValue(hp);
+		}
+		private void OnDestroy()
+		{
+			EnemyBehaviour.EEnemyHitPlayer -= OnHit;
 		}
 
 		void OnHit(int damage)

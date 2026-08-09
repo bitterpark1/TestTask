@@ -1,3 +1,4 @@
+using Assets.Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,12 +11,22 @@ public class PlayerController : MonoBehaviour
     Rigidbody playerBody;
 
     [SerializeField]
-    float playerSpeed = 1f;
+    float playerSpeedBase = 6f;
 
     [SerializeField]
     Animator animator;
 
+    [SerializeField]
+    PlayerConfig config;
+
     const string MOVEMENT_INPUT_NAME = "Movement";
+
+    readonly int moveAnimSpeedParam = Animator.StringToHash("Speed");
+
+	private void Awake()
+	{
+        animator.SetFloat(moveAnimSpeedParam, config.moveSpeed);
+	}
 
 	private void FixedUpdate()
 	{
@@ -26,10 +37,9 @@ public class PlayerController : MonoBehaviour
 	{
         var joystickInput = input.actions[MOVEMENT_INPUT_NAME].ReadValue<Vector2>();
         var movementDir = new Vector3(joystickInput.x, 0, joystickInput.y).normalized;
-        var movement = movementDir * playerSpeed * Time.fixedDeltaTime;
+        var movement = movementDir * playerSpeedBase * config.moveSpeed * Time.fixedDeltaTime;
         playerBody.MovePosition(transform.position + movement);
 
-        //Convert movement input to local axes and update animator
         var localMovementDir = transform.InverseTransformDirection(movementDir);
         animator.SetFloat("LocMovementX", localMovementDir.x, .15f, Time.fixedDeltaTime);
         animator.SetFloat("LocMovementZ", localMovementDir.z, .15f, Time.fixedDeltaTime);

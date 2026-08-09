@@ -81,9 +81,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1acf2dd728ccb024994995dba45668db, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7086965851686434458}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1acf2dd728ccb024994995dba45668db, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8237341319330290328}
   m_SourcePrefab: {fileID: 100100000, guid: 1acf2dd728ccb024994995dba45668db, type: 3}
 --- !u!1 &400323601965181187 stripped
@@ -91,28 +88,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1acf2dd728ccb024994995dba45668db, type: 3}
   m_PrefabInstance: {fileID: 670849290303427666}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &7086965851686434458
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 400323601965181187}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1459823808202505154, guid: 1acf2dd728ccb024994995dba45668db, type: 3}
 --- !u!65 &8237341319330290328
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -199,7 +174,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5515955848155048965, guid: 96a8a78f39c44ee4397814cb7167b87e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -269,7 +245,8 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7303551079836179733, guid: e87d712833f9edf47878be457ad66ed9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -339,7 +316,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Car_13_Wheel_Rear_Left
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4795860414146467220, guid: b763623df7ad0f04d926bcc55b041438, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -409,7 +387,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2286008530238448982, guid: ba1ec8d26bf7ea7439d5e4e22c05a024, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -479,7 +458,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Car_13_Wheel_Front_Right
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7567819360855559551, guid: c9166299cd4a387478e0b9e6aa559634, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

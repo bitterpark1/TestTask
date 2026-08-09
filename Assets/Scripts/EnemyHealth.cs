@@ -6,10 +6,9 @@ namespace Assets.Scripts
 {
 	public class EnemyHealth : MonoBehaviour
 	{
-		public static event System.Action<EnemyHealth> EEnemyDead;
+		public static event System.Action<EnemyHealth> EDeathAnimationFinished;
 
-		[SerializeField]
-		Animator animator;
+		public bool isAlive { get => hp > 0; }
 
 		[SerializeField]
 		EnemyBehaviour behaviour;
@@ -19,23 +18,36 @@ namespace Assets.Scripts
 
 		[SerializeField]
 		Collider myCollider;
+		[SerializeField]
+		Rigidbody myBody;
+
+		Animator animator;
 
 		readonly int HurtAnimationParam = Animator.StringToHash("Hurt");
 		readonly int DeathAnimationParam = Animator.StringToHash("Die");
 
-		int startingHp = 10;
-
+		int startingHp;
 		int hp = 10;
+
+		public void Initialize(int startingHp, Animator animator)
+		{
+			this.animator = animator;
+			this.startingHp = startingHp;
+			hp = startingHp;
+			hpBar.SetMaxValue(hp);
+			hpBar.SetCurrentValue(hp);
+		}
 
 		private void OnEnable()
 		{
 			hp = startingHp;
-			hpBar.SetMaxValue(hp);
 			hpBar.SetCurrentValue(hp);
-			//Subscribe to player shoot event
+			hpBar.gameObject.SetActive(true);
+			behaviour.enabled = true;
+			myCollider.enabled = true;
+			myBody.isKinematic = false;
 			PlayerShooting.EPlayerFired += OnPlayerFired;
 		}
-
 		private void OnDisable()
 		{
 			PlayerShooting.EPlayerFired -= OnPlayerFired;
@@ -56,13 +68,13 @@ namespace Assets.Scripts
 			if (hp > 0)
 			{
 				animator.SetTrigger(HurtAnimationParam);
+				myBody.isKinematic = true;
 				behaviour.takingDamage = true;
 			}
 			else
 			{
 				animator.SetTrigger(DeathAnimationParam);
 				myCollider.enabled = false;
-				EEnemyDead?.Invoke(this);
 				behaviour.enabled = false;
 				hpBar.gameObject.SetActive(false);
 			}
@@ -71,11 +83,13 @@ namespace Assets.Scripts
 		void OnHurtAnimEnded()
 		{
 			behaviour.takingDamage = false;
+			myBody.isKinematic = false;
 		}
 
 		void OnDeathAnimEnded()
 		{
-			Destroy(gameObject);
+			EDeathAnimationFinished?.Invoke(this);
+			//Destroy(gameObject);
 		}
 	}
 }

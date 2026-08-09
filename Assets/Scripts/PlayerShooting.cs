@@ -18,6 +18,9 @@ public class PlayerShooting : MonoBehaviour
 	[SerializeField]
 	Rigidbody myBody;
 
+	[SerializeField]
+	PlayerConfig config;
+
 	List<EnemyHealth> enemies;
 
 	Transform currentTarget;
@@ -25,24 +28,35 @@ public class PlayerShooting : MonoBehaviour
 	bool shooting;
 
 	readonly int shootParam = Animator.StringToHash("Shooting");
+	readonly int attackSpeedParam = Animator.StringToHash("AttackSpeed");
 
-	int damage = 5;
+	int damage = 1;
 
 	private void Awake()
 	{
 		enemies = new List<EnemyHealth>(FindObjectsByType<EnemyHealth>(FindObjectsInactive.Exclude, FindObjectsSortMode.None));
-		EnemyHealth.EEnemyDead += OnEnemyDied;
-		//set shoot animation speed factor
+		damage = config.damage;
+		animator.SetFloat(attackSpeedParam, config.attackSpeed);
+
+		Spawner.EOnEnemySpawned += OnEnemySpawned;
+		Spawner.EOnEnemyDespawned += OnEnemyDespawned;
 	}
 
-	private void OnEnemyDied(EnemyHealth obj)
+	void OnEnemyDespawned(GameObject enemy)
 	{
-		enemies.Remove(obj);
+		enemies.Remove(enemy.GetComponent<EnemyHealth>());
 	}
+
+	void OnEnemySpawned(GameObject enemy)
+	{
+		enemies.Add(enemy.GetComponent<EnemyHealth>());
+	}
+
 
 	private void OnDestroy()
 	{
-		EnemyHealth.EEnemyDead -= OnEnemyDied;
+		Spawner.EOnEnemySpawned -= OnEnemySpawned;
+		Spawner.EOnEnemyDespawned -= OnEnemyDespawned;
 	}
 
 	private void FixedUpdate()
@@ -51,7 +65,7 @@ public class PlayerShooting : MonoBehaviour
 		for (int i=0; i< enemies.Count; i++)
 		{
 			var enemy = enemies[i];
-			if (!enemy.gameObject.activeInHierarchy)
+			if (!enemy.gameObject.activeInHierarchy || !enemy.isAlive)
 			{
 				continue;
 			}
@@ -76,12 +90,15 @@ public class PlayerShooting : MonoBehaviour
 		animator.SetBool(shootParam, shooting);
 	}
 
+	void OnMuzzleFlash()
+	{
+		muzzleFlash.Play();
+		EPlayerFired?.Invoke(currentTarget, damage);
+	}
+
 	void OnShoot()
 	{
 		shooting = false;
-		muzzleFlash.Play();
-
-		EPlayerFired?.Invoke(currentTarget, damage);
 		currentTarget = null;
 	}
 
